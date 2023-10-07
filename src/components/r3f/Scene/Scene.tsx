@@ -5,7 +5,7 @@ import SDF from '../SDF/SDF';
 import * as THREE from 'three';
 import './styles.scss';
 
-function Scene({ DPR = 1, children }: { DPR?: number; children: ReactNode }) {
+function Scene({ DPR = 2, children }: { DPR?: number; children: ReactNode }) {
   const childrenProps = { DPR }
   return ( 
     <Canvas 

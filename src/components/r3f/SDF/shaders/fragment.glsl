@@ -10,8 +10,18 @@ float sdSphere(vec3 p, float radius) {
 }
 
 float scene(vec3 p) {
-  float distance = sdSphere(p, 1.0);
-  return distance;
+  float plane = p.z + 10.0;
+  float plane2 = p.y + 1.0;
+  float sphere = sdSphere(vec3(p.x, p.y + cos(uTime * 1.5) * 0.25 , p.z), 0.5);
+  float sphere2 = sdSphere(p, 0.5);
+  float sphere3 = sdSphere(vec3(p.x, p.y + cos(uTime * 1.5) * 0.25, p.z), 0.25);
+  
+  float distance1 = smoothstep(max(sphere, cos(sphere2)), min(cos(sphere), sphere2), 0.0);
+  float distance2 = min(distance1, plane);
+  float distance3 = min(distance2, plane2);
+  float distance4 = min(distance3, sphere3);
+
+  return distance4;
 }
 
 float raymarch(vec3 ro, vec3 rd) {
@@ -43,11 +53,23 @@ vec3 getNormal(vec3 p) {
   return normalize(n);
 }
 
+float softShadows(vec3 ro, vec3 rd, float mint, float maxt, float k ) {
+  float resultingShadowColor = 1.0;
+  float t = mint;
+  for(int i = 0; i < 50 && t < maxt; i++) {
+      float h = scene(ro + rd*t);
+      if( h < 0.001 )
+          return 0.0;
+      resultingShadowColor = min(resultingShadowColor, k*h/t );
+      t += h;
+  }
+  return resultingShadowColor ;
+}
+
 void main() {
   vec3 color = vec3(0.0);
-
   // Light position
-  vec3 lightPosition = vec3(-10.0 * cos(uTime), 10.0, 10.0 * sin(uTime));
+  vec3 lightPosition = vec3(-10.0 * cos(uTime) * 0.5, 10.0 + sin(uTime) * 2., 10.0);
 
   // Normalize coords
   vec2 uv = gl_FragCoord.xy / uResolution.xy;
@@ -67,7 +89,10 @@ void main() {
     vec3 lightDirection = normalize(lightPosition - p);
 
     float diffuse = max(dot(normal, lightDirection), 0.0);
-    color = vec3(1.0) * diffuse;
+    float shadows = softShadows(p, lightDirection, 0.1, 5.0, 64.0);
+
+    color = vec3(1.0) * diffuse * shadows;
+    color = mix(vec3(0.92, 0.38, 0.26), vec3(0.94, 0.61, 0.47), diffuse * shadows);
   }
 
   gl_FragColor = vec4(color, 1.0);
