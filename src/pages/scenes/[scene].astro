@@ -1,6 +1,13 @@
 ---
-import './styles.scss';
-import Scene from '@components/r3f/Scene/Scene.tsx';
+import Scene from '@components/r3f/Scene/Scene';
+export function getStaticPaths() {
+  return [
+    {params: {scene: 'default'}},
+    {params: {scene: 'night'}},
+  ];
+};
+
+const { scene } = Astro.params;
 ---
 
 <html lang="en">
@@ -12,6 +19,6 @@ import Scene from '@components/r3f/Scene/Scene.tsx';
 		<title>Astro</title>
 	</head>
 	<body>
-		<Scene scene={"default"} client:load />
+		<Scene scene={ scene } client:load />
 	</body>
 </html>
