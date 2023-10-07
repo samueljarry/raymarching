@@ -31,8 +31,23 @@ float raymarch(vec3 ro, vec3 rd) {
   return dO;
 }
 
+vec3 getNormal(vec3 p) {
+  vec2 e = vec2(0.01, 0.0);
+
+  vec3 n = scene(p) - vec3(
+    scene(p-e.xyy),
+    scene(p-e.yxy),
+    scene(p-e.yyx)
+  );
+
+  return normalize(n);
+}
+
 void main() {
   vec3 color = vec3(0.0);
+
+  // Light position
+  vec3 lightPosition = vec3(-10.0 * cos(uTime), 10.0, 10.0 * sin(uTime));
 
   // Normalize coords
   vec2 uv = gl_FragCoord.xy / uResolution.xy;
@@ -48,7 +63,11 @@ void main() {
   vec3 p = ro + rd * d;
 
   if(d < MAX_DIST) {
-    color = vec3(1.0);
+    vec3 normal = getNormal(p);
+    vec3 lightDirection = normalize(lightPosition - p);
+
+    float diffuse = max(dot(normal, lightDirection), 0.0);
+    color = vec3(1.0) * diffuse;
   }
 
   gl_FragColor = vec4(color, 1.0);
