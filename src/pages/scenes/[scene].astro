@@ -1,13 +1,14 @@
 ---
 import Scene from '@components/r3f/Scene/Scene';
+import { scenes } from '@lib/useScene';
+
 export function getStaticPaths() {
-  return [
-    {params: {scene: 'default'}},
-    {params: {scene: 'night'}},
-  ];
+  return Object.keys(scenes).map((key: string) => (
+		{ params: { scene: key } }
+	));
 };
 
-const { scene } = Astro.params;
+const { scene } = Astro.params as { scene: string };
 ---
 
 <html lang="en">
