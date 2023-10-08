@@ -2,14 +2,18 @@ import { useFrame, useThree } from '@react-three/fiber';
 import React, { useRef, type MutableRefObject, useEffect, useMemo } from 'react';
 import * as THREE from 'three';
 import { v4 as uuidv4 } from 'uuid';
-import fragment from './shaders/fragment.glsl';
-import vertex from './shaders/vertex.glsl';
+import vertex from '@shaders/vertex.glsl';
 import { useControls } from 'leva';
 import useScene from '@lib/useScene';
 
 function SDF({ DPR, scene }: { DPR: number; scene: string }) {
   const { viewport } = useThree();
-  const { uniforms: sceneUniforms, params, values } = useScene(scene);
+  const { 
+    fragment, 
+    uniforms: sceneUniforms, 
+    params, 
+    values
+  } = useScene(scene);
   
   const uniforms: { [key:string]: THREE.Uniform } = useMemo(() => ({
     uTime: new THREE.Uniform(0.0),

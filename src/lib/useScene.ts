@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-
+import bounceFragment from '@shaders/bounceFragment.glsl';
+import fragment2 from '@shaders/fragment2.glsl';
 const defaultSceneColors = {
   sunset: {
     uColor1: new THREE.Uniform(new THREE.Vector3(0.92, 0.38, 0.26)),
@@ -13,60 +14,68 @@ const defaultSceneColors = {
 
 type SceneParams = {
   [key: string]: {
+    fragment: string;
     uniforms: {
       [key: string]: THREE.Uniform<unknown>
     };
-    params: SchemaOrFn<Schema>;
+    params: any;
     values?: any;
   }
 }
 
-function useScene(name: string) {
-  const scenes: SceneParams = {
-    default: {
-      uniforms: {
-        ...defaultSceneColors.sunset,
-        uSpeed: new THREE.Uniform(1.5)
-      },
-      params: {
-        colors: {
-          value: 'sunset',
-          options: Object.keys(defaultSceneColors),
-        },
-        uSpeed: {
-          value: 1.5,
-          step: 0.001,
-          max: 3,
-          min: 0,
-        }
-      },
-      values: {
-        colors: defaultSceneColors
-      },
+export const scenes: SceneParams = {
+  bounce: {
+    fragment: bounceFragment,
+    uniforms: {
+      ...defaultSceneColors.sunset,
+      uSpeed: new THREE.Uniform(1.5)
     },
-    night: {
-      uniforms: {
-        ...defaultSceneColors.night,
-        uSpeed: new THREE.Uniform(1.5)
+    params: {
+      colors: {
+        value: 'sunset',
+        options: Object.keys(defaultSceneColors),
       },
-      params: {
-        colors: {
-          value: 'night',
-          options: Object.keys(defaultSceneColors),
-        },
-        uSpeed: {
-          value: 1.5,
-          step: 0.001,
-          max: 3,
-          min: 0,
-        }
+      uSpeed: {
+        value: 1.5,
+        step: 0.001,
+        max: 3,
+        min: 0,
+      }
+    },
+    values: {
+      colors: defaultSceneColors
+    },
+  },
+  'bounce-night': {
+    fragment: bounceFragment,
+    uniforms: {
+      ...defaultSceneColors.night,
+      uSpeed: new THREE.Uniform(1.5)
+    },
+    params: {
+      colors: {
+        value: 'night',
+        options: Object.keys(defaultSceneColors),
       },
-      values: {
-        colors: defaultSceneColors
-      },
-    }
+      uSpeed: {
+        value: 1.5,
+        step: 0.001,
+        max: 3,
+        min: 0,
+      }
+    },
+    values: {
+      colors: defaultSceneColors
+    },
+  },
+  temp: {
+    fragment: fragment2,
+    uniforms: {},
+    params: {}
   }
-  
+}
+
+function useScene(name: string) {
   return scenes[name];
 }
 

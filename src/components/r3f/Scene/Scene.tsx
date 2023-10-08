@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import type { ReactNode } from 'react';
 import { Canvas } from '@react-three/fiber';
-import SDF from '../SDF/SDF';
+import SDF from '../SDF';
 import './styles.scss';
 import { Leva } from 'leva';
 

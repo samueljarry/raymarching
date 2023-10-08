@@ -9,6 +9,7 @@
       "@layouts/*": ["src/layouts/*"],
       "@lib/*": ["src/lib/*"],
       "@content/*": ["src/content/*"],
+      "@shaders/*": ["src/shaders/*"],
     }
   }
 }
